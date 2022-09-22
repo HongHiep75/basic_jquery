@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/grid.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Document</title>
+    <style>
+        */ {
+            box-sizing: border-box;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+    <script src="/js/jQuery.js"></script>
+</head>
+
+<body>
+
+    <div class="mainbox col l-4 m-8 c-12  ">
+        <h1>Student form</h1>
+        <form id="form--student" action="">
+            <div class="inp row">
+                <label for="name">Name:</label>
+                <input name="name" type="text" id="name"><br>
+                <span class="mess"></span>
+            </div>
+
+            <div class="inp row">
+                <label for="birthday">Birthday:</label>
+                <input type="date" id="birthday"><br>
+                <span class="mess"></span>
+            </div>
+
+            <div class="inp row">
+                <label for="phone">Phone :</label>
+                <input name="phone" type="number" id="phone"><br>
+                <span class="mess"></span>
+            </div>
+
+            <div class="inp row">
+                <label for="dho">Hometown:</label>
+                <input type="home" id="home"><br>
+                <span class="mess"></span>
+            </div>
+            <div>
+                <input type="hidden" value="0" id="id_student">
+            </div>
+        </form>
+        <button class="form-bt form-bt--save">Save</button>
+        <button class="form-bt form-bt--reset">Reset</button>
+    </div>
+
+    <div class="nutcuoi ">
+        <button class="bt-delete">Delete</button>
+        <button class="bt-edit">Edit</button>
+        <span class="mess"></span>
+    </div>
+    <table id="mytable">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Birthday</th>
+            <th>Phone</th>
+            <th>Hometown</th>
+        </tr>
+    </table>
+
+    <script src="/js/validate.js"></script>
+    <script src="/js/crudFunction.js"></script>
+    <script>
+        $("document").ready(function () {
+            showList();
+            // nghe su kien cua nut save luu thong tin va hien thi vao danh sach
+            $(".form-bt--save").click(function () {
+                saveStudent();
+                showList();
+
+            })
+            // rest lai thong tin trong form
+            $(".form-bt--reset").click(function () {
+                reset();
+            });
+
+            // lang nghe su kien click cho nut delete
+            $(".bt-delete").click(function () {
+                if (!confirm("Xác nhận muốn xóa")) {
+                    return;
+                }
+                var list = JSON.parse(localStorage.getItem("listStuden"));
+                if (list == null) {
+                    alert("Danh sach trong")
+                    return;
+                }
+                $("#mytable input:checked").each(function () {
+                    deleteStudent($(this).val(), list)
+                })
+                showList();
+            });
+            // lang nghe su kien edit check va nhap thong tin vao form
+            $(".bt-edit").click(function () {
+                let studentEdit = [];
+                $("#mytable input:checked").each(function () {
+                    studentEdit.push($(this).val());
+                })
+                if (studentEdit.length == 0) {
+                    alert("Chọn một ô để edit")
+                    return
+                }
+                if (studentEdit.length > 1) {
+                    alert("chỉ được chọn 1 ô")
+                    return;
+                }
+                let list = JSON.parse(localStorage.getItem("listStuden"));
+                let n = list.length;
+                let student;
+                let id = studentEdit[0];
+                // tim doi tuong student trong danh sach
+                // so sanh id
+                for (let i = 0; i < n; i++) {
+                    console.log(list[i].id )
+                    if (list[i].id == id) {
+                        student = list[i]
+                        break;
+                    }
+                }
+                // ghi thong tin nhan duoc cua doi tuong muon edit vao form
+                $("#name").val(student.name);
+                $("#birthday").val(student.birthday);
+                $("#phone").val(student.phone);
+                $("#home").val(student.hometown);
+                $("#id_student").val(student.id);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
